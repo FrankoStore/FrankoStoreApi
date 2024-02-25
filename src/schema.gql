@@ -1,0 +1,70 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AuthenticationInput {
+  login: String!
+  password: String!
+}
+
+type AuthenticationPayload {
+  accessToken: String!
+  refreshToken: String!
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  phone: String!
+  roles: [RoleEnum!]!
+  username: String!
+  website: String
+}
+
+type DiscountType {
+  name: String!
+  percentage: Float!
+}
+
+type Mutation {
+  login(authenticationInput: AuthenticationInput!): String!
+  refresh: AuthenticationPayload!
+  register(user: CreateUserInput!): AuthenticationPayload!
+  updateMyUser(user: UpdateUserInput!): User!
+}
+
+type Query {
+  getMysUser: User!
+}
+
+type Role {
+  name: String!
+}
+
+enum RoleEnum {
+  Admin
+  Customer
+  Manager
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  phone: String
+  username: String
+  website: String
+}
+
+type User {
+  dicountType: DiscountType
+  email: String!
+  firstName: String!
+  id: Int!
+  lastName: String!
+  phone: String!
+  roles: [Role]
+  username: String!
+  website: String
+}
