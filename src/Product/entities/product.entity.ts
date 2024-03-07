@@ -3,6 +3,7 @@ import { EntityBase } from "src/common/Database/bases/entity.base";
 import { Column, Entity, JoinTable, ManyToMany} from "typeorm";
 import { ProductCategory } from "./product-category";
 import { File } from "src/File/entities/file.entity";
+import { SizeEnum } from "../enums/size.enum";
 
 
 @ObjectType()
@@ -17,6 +18,22 @@ export class Product extends EntityBase<Product>{
     @ManyToMany(() => ProductCategory, {nullable:false})
     @JoinTable({name: "PruductCategory"})
     categories: ProductCategory[];
+
+    @Field(() => Number)
+    @Column("double precision", {name:"Height"})
+    height:number;
+
+    @Field(() => Number)
+    @Column("double precision", {name:"Width"})
+    width:number;
+
+    @Field(() => Number)
+    @Column("double precision", {name:"Length"})
+    length:number;
+
+    @Field(() => SizeEnum)
+    @Column("enum", {name:"Size", enum: SizeEnum})
+    size:SizeEnum;
 
     @Field(() => Number)
     @Column('double precision', {name:"RetailPrice"})

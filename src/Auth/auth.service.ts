@@ -1,6 +1,6 @@
 import { UserPayload } from './models/user.payload.model';
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { AuthenticationInput} from './inputs/authentication.input';
+import { AuthenticationInput } from './inputs/authentication.input';
 import { User } from 'src/User/entities/user.entity';
 import { CreateUserInput } from 'src/User/inputs/create-user.input';
 import { ConfigService } from '@nestjs/config';
@@ -18,24 +18,25 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   public async login(authInput: AuthenticationInput) {
     const user: User | null = await this.userRepository
-    .createQueryBuilder('user')
-    .where('user.username = :username', { username: authInput.login })
-    .orWhere('user.email = :email', { email: authInput.login })
-    .getOne();
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username: authInput.login })
+      .orWhere('user.email = :email', { email: authInput.login })
+      .getOne();
 
-  if (!user) {
-    throw new UnauthorizedException('Invalid login');
-  }
+    if (!user) {
+      throw new UnauthorizedException('Invalid login');
+    }
 
-  const isValidPassword: boolean = await bcrypt.compare(authInput.password, user.passwordHash);
+    const isValidPassword: boolean = await bcrypt.compare(authInput.password, user.passwordHash);
 
-  if (!isValidPassword) {
-    throw new UnauthorizedException('Invalid password');
-  }
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid password');
+    }
+    return this.createTokens(user);
   }
 
   public async register(userInput: CreateUserInput): Promise<AuthenticationPayload> {

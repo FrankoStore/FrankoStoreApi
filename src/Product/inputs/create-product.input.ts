@@ -1,33 +1,63 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { Type } from "class-transformer";
-import { ArrayNotEmpty, IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from "class-validator";
 import { CreateFileInput } from "src/File/inputs/create-file.input";
+import { CreateProductCategoryInput } from "./create-product-category.input";
+import { SizeEnum } from "../enums/size.enum";
 
 
 @InputType()
 export class CreateProductInput{
+    
+    @Field(() => String)
     @IsNotEmpty()
     @IsString()
-    @Field(() => String)
     name:string;
-
-    @Field(() => [String])
-    categories: String;
-
+    
+    @Field(() => Number)
     @IsNotEmpty()
     @IsNumber()
-    @Field(() => Number)
+    @Min(0)
     retailPrice:number;
 
+    @Field(() => String)
     @IsNotEmpty()
     @IsString()
-    @Field(() => String)
     description:string;
 
+    @Field(() => Number)
+    @IsNotEmpty()
+    @IsNumber()
+    @Min(0)
+    height:number;
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    @IsNumber()
+    @Min(0)
+    width:number;
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    @IsNumber()
+    @Min(0)
+    length:number;
+
+    @Field(() => SizeEnum)
+    @IsNotEmpty()
+    @IsEnum(SizeEnum)
+    size:SizeEnum;
+
+    @Field(() => [CreateProductCategoryInput])
     @IsArray()
     @ArrayNotEmpty()
     @ValidateNested({each:true})
-    @Type(() => CreateFileInput)
+    @Type(() => CreateProductCategoryInput)
+    categories:CreateProductCategoryInput[]
+
     @Field(() => [CreateFileInput])
+    @IsArray()
+    @ValidateNested({each:true})
+    @Type(() => CreateFileInput)
     images:CreateFileInput[];
 }

@@ -13,7 +13,7 @@ import { User } from 'src/User/entities/user.entity';
 export class AuthResolver {
   constructor(private readonly authenticateService: AuthService) {}
 
-  @Mutation(() => String)
+  @Mutation(() => AuthenticationPayload)
   async login(@Args('authenticationInput') authenticationInput: AuthenticationInput) {
     try {
       const response = await this.authenticateService.login(authenticationInput);
