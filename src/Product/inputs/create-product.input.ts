@@ -2,7 +2,7 @@ import { Field, InputType } from "@nestjs/graphql";
 import { Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from "class-validator";
 import { CreateFileInput } from "src/File/inputs/create-file.input";
-import { CreateProductCategoryInput } from "./create-product-category.input";
+import { CreateProductCategoryInput } from "../../ProductCategory/inputs/create-product-category.input";
 import { SizeEnum } from "../enums/size.enum";
 
 

@@ -1,65 +1,65 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, Int } from "@nestjs/graphql";
 import { Type } from "class-transformer";
 import { IsOptional, IsString, IsNumber, Min, IsEnum,} from "class-validator";
 import { SizeEnum } from "../enums/size.enum";
-import { FindOptionsProductCategoryInput } from "./find-options-product-category.input";
+import { FindOptionsProductCategoryInput } from "../../ProductCategory/inputs/find-options-product-category.input";
+import { NumericRangeInput } from "src/common/filter-input-types/numeric-range.input";
 
 
 @InputType()
 export class FindOptionsProductInput{
-    @Field(() => Number, {nullable:true})
+    @Field(() => [Number], { nullable: true })
     @IsOptional()
-    @IsNumber()
-    @Min(0)
-    id?: number;
+    @IsNumber({}, { each: true })
+    ids?: number[];
 
     @Field(() => String, {nullable:true})
     @IsOptional()
     @IsString()
     name?:string;
 
-    @Field(() => Number, {nullable:true})
+    @Field(() => NumericRangeInput, {nullable:true})
     @IsOptional()
-    @IsNumber()
-    @Min(0)
-    retailPrice?:number;
+    retailPrice?:NumericRangeInput;
 
     @Field(() => String, {nullable:true})
     @IsOptional()
     @IsString()
     description?:string;
 
-    @Field(() => Number, {nullable:true})
+    @Field(() => NumericRangeInput, {nullable:true})
     @IsOptional()
-    @IsNumber()
-    @Min(0)
-    height?:number;
+    height?:NumericRangeInput;
 
-    @Field(() => Number, {nullable:true})
+    @Field(() => NumericRangeInput, {nullable:true})
     @IsOptional()
-    @IsNumber()
-    @Min(0)
-    width?:number;
+    width?:NumericRangeInput;
 
-    @Field(() => Number, {nullable:true})
+    @Field(() => NumericRangeInput, {nullable:true})
     @IsOptional()
-    @IsNumber()
-    @Min(0)
-    length?:number;
+    length?:NumericRangeInput;
 
-    @Field(() => SizeEnum, {nullable:true})
+    @Field(() => [SizeEnum], { nullable: true })
     @IsOptional()
-    @IsEnum(SizeEnum)
-    size?:SizeEnum;
+    @IsEnum(SizeEnum, { each: true })
+    sizes?: SizeEnum[];
 
-    @Field(() => Number, {nullable:true})
+    @Field(() => NumericRangeInput, {nullable:true})
     @IsOptional()
-    @IsNumber()
-    @Min(0)
-    amount?:number;
+    amount?:NumericRangeInput;
 
     @Field(() => FindOptionsProductCategoryInput, {nullable:true})
-    @Type(() => FindOptionsProductCategoryInput)
     @IsOptional()
+    @Type(() => FindOptionsProductCategoryInput)
     categories?:FindOptionsProductCategoryInput;
+
+    @Field(() => Int, { nullable: true })
+    @IsOptional()
+    @IsNumber()
+    skip?: number;
+
+    @Field(() => Int, { nullable: true })
+    @IsOptional()
+    @IsNumber()
+    take?: number;
 }

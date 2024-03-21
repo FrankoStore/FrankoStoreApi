@@ -4,11 +4,10 @@ import { IsOptional, IsNumber, Min, IsString, IsDate } from "class-validator";
 @InputType()
 export class FindOptionsProductCategoryInput{
 
-    @Field(() => Number, {nullable:true})
+    @Field(() => [Number], { nullable: true })
     @IsOptional()
-    @IsNumber()
-    @Min(0)
-    id?: number;
+    @IsNumber({}, { each: true })
+    ids?: number[];
 
     @Field(() => String, {nullable:true})
     @IsOptional()

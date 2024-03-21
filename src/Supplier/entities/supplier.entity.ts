@@ -4,7 +4,7 @@ import { Column, Entity } from "typeorm";
 
 @Entity({name:"Supplier"})
 @ObjectType()
-export class Supllier extends EntityBase<Supllier>{
+export class Supplier extends EntityBase<Supplier>{
 
     @Field(() => String)
     @Column('varchar', {name:"CompanyName", length:255, unique:true})
@@ -15,11 +15,11 @@ export class Supllier extends EntityBase<Supllier>{
     phoneNumber:string;
 
     @Field(() => String)
-    @Column('varchar', {name:"Address", length:"MAX"})
+    @Column('text', {name:"Address"})
     address:string;
 
     @Field(() => String)
-    @Column('varchar', {name:"Webasite", length:"MAX", nullable:true})
+    @Column('text', {name:"Webasite", nullable:true})
     website:string;
 
     @Field(() => String)

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { EntityBase } from "src/common/Database/bases/entity.base";
 import { Column, Entity, JoinTable, ManyToMany} from "typeorm";
-import { ProductCategory } from "./product-category";
+import { ProductCategory } from "../../ProductCategory/entities/product-category";
 import { File } from "src/File/entities/file.entity";
 import { SizeEnum } from "../enums/size.enum";
 

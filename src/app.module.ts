@@ -6,8 +6,13 @@ import { GQLModule } from './common/GQL/gql.module';
 import { DatabaseModule } from './common/Database/database.module';
 import { InitModule } from './Init/init.module';
 import { ProductModule } from './Product/product.module';
+import { ProductCategoryModule } from 'src/ProductCategory/product-category.module';
+import { SupplierModule } from 'src/Supplier/supplier.module';
 
 @Module({
-  imports: [ConfigurationModule, GQLModule, DatabaseModule, InitModule, AuthModule, UserModule, ProductModule],
+  imports: [
+    ConfigurationModule, GQLModule, DatabaseModule,
+    InitModule, AuthModule, UserModule,
+    ProductModule, ProductCategoryModule, SupplierModule],
 })
 export class AppModule { }

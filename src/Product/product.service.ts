@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Product } from "./entities/product.entity";
-import { Repository } from "typeorm";
-import { ProductCategory } from "./entities/product-category";
+import { Repository,  FindOptionsWhere, In, Like, Between} from "typeorm";
+import { ProductCategory } from "../ProductCategory/entities/product-category";
 import { FileService } from "src/File/file.service";
 import { CreateProductInput } from "./inputs/create-product.input";
 import { File } from "src/File/entities/file.entity";
@@ -21,7 +21,48 @@ export class ProductService{
     ){}
 
     async getProducts(findOptions:FindOptionsProductInput){
-        return this.productRepository.find({where:findOptions, relations:{images:true, categories:true}})
+
+        const where:  FindOptionsWhere<Product> = {};
+
+        if(findOptions.ids){
+            where.id = In(findOptions.ids);
+        }
+
+        if(findOptions.name){
+            where.name = Like(findOptions.name)
+        }
+
+        if(findOptions.retailPrice) {
+            where.retailPrice = Between(findOptions.retailPrice.min, findOptions.retailPrice.max);
+        }
+
+        if(findOptions.description){
+            where.description = Like(findOptions.description);
+        }
+
+        if(findOptions.height){
+            where.height = Between(findOptions.height.min, findOptions.height.max)
+        }
+
+        if(findOptions.width) {
+            where.width = Between(findOptions.width.min, findOptions.width.max)
+        }
+
+        if(findOptions.length) {
+            where.length = Between(findOptions.length.min, findOptions.length.max)
+        }
+
+        if(findOptions.sizes) {
+            where.size = In(findOptions.sizes);
+        }
+
+        if(findOptions.amount) {
+            where.amount = Between(findOptions.amount.min, findOptions.amount.max)
+        }
+
+
+
+        return this.productRepository.find({where:where,skip:findOptions.skip, take:findOptions.take, relations:{images:true, categories:true}})
     }
 
     async createProduct(product:CreateProductInput){

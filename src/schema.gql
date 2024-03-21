@@ -37,6 +37,14 @@ input CreateProductInput {
   width: Float!
 }
 
+input CreateSupplierInput {
+  address: String!
+  companyName: String!
+  email: String!
+  phoneNumber: String!
+  website: String!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -69,31 +77,42 @@ type File {
 
 input FindOptionsProductCategoryInput {
   endDateRange: DateTime
-  id: Float
+  ids: [Float!]
   name: String
   startDateRange: DateTime
 }
 
 input FindOptionsProductInput {
-  amount: Float
+  amount: NumericRangeInput
   categories: FindOptionsProductCategoryInput
   description: String
-  height: Float
-  id: Float
-  length: Float
+  height: NumericRangeInput
+  ids: [Float!]
+  length: NumericRangeInput
   name: String
-  retailPrice: Float
-  size: SizeEnum
-  width: Float
+  retailPrice: NumericRangeInput
+  sizes: [SizeEnum!]
+  skip: Int
+  take: Int
+  width: NumericRangeInput
 }
 
 type Mutation {
   createProduct(product: CreateProductInput!): Product!
+  createProductCategory(productCategory: CreateProductCategoryInput!): ProductCategory!
+  createSupplier(supplier: CreateSupplierInput!): Supplier!
   login(authenticationInput: AuthenticationInput!): AuthenticationPayload!
   refresh: AuthenticationPayload!
   register(user: CreateUserInput!): AuthenticationPayload!
   updateMyUser(user: UpdateUserInput!): User!
   updateProduct(id: Float!, product: UpdateProductInput!): Product!
+  updateProductCategory(id: Float!, productCategory: UpdateProductCategoryInput!): ProductCategory!
+  updateSupplier(id: Float!, supplier: UpdateSupplierInput!): Supplier!
+}
+
+input NumericRangeInput {
+  max: Float
+  min: Float
 }
 
 type Product {
@@ -116,8 +135,10 @@ type ProductCategory {
 }
 
 type Query {
+  getAllProductCategories(findOptions: FindOptionsProductCategoryInput!): [ProductCategory!]!
   getMysUser: User!
   getProducts(findOptions: FindOptionsProductInput): [Product!]!
+  getSuppliers: [Supplier!]!
 }
 
 type Role {
@@ -138,6 +159,20 @@ enum SizeEnum {
   XXL
 }
 
+type Supplier {
+  address: String!
+  companyName: String!
+  email: String!
+  phoneNumber: String!
+  website: String!
+}
+
+input UpdateProductCategoryInput {
+  endDateRange: DateTime
+  name: String
+  startDateRange: DateTime
+}
+
 input UpdateProductInput {
   amount: Float!
   categories: [CreateProductCategoryInput!]
@@ -149,6 +184,14 @@ input UpdateProductInput {
   retailPrice: Float
   size: SizeEnum
   width: Float
+}
+
+input UpdateSupplierInput {
+  address: String
+  companyName: String
+  email: String
+  phoneNumber: String
+  website: String
 }
 
 input UpdateUserInput {
