@@ -21,7 +21,7 @@ export class ProductCategoryResolver{
 
    @Query(() => [ProductCategory])
    @Public()
-   async getAllProductCategories(@Args('findOptions') findOptions:FindOptionsProductCategoryInput){
+   async getProductCategories(@Args('findOptions', {nullable:true}) findOptions:FindOptionsProductCategoryInput){      
       return this.productCategoryService.getProductCategories(findOptions);
    }
 

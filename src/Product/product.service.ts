@@ -8,6 +8,7 @@ import { CreateProductInput } from "./inputs/create-product.input";
 import { File } from "src/File/entities/file.entity";
 import { FindOptionsProductInput } from "./inputs/find-options-product.input";
 import { UpdateProductInput } from "./inputs/update-product.input";
+import { ProductCategoryService } from "src/ProductCategory/product-category.service";
 
 
 @Injectable()
@@ -17,39 +18,40 @@ export class ProductService{
         private readonly productRepository:Repository<Product>,
         @InjectRepository(ProductCategory)
         private readonly productCategoryRepository:Repository<ProductCategory>,
-        private readonly fileService:FileService
+        private readonly fileService:FileService,
+        private readonly productCategoryServices: ProductCategoryService
     ){}
 
-    async getProducts(findOptions:FindOptionsProductInput){
+    async getProducts(findOptions?:FindOptionsProductInput){
 
         const where:  FindOptionsWhere<Product> = {};
 
-        if(findOptions.ids){
+        if(findOptions?.ids){
             where.id = In(findOptions.ids);
         }
 
-        if(findOptions.name){
-            where.name = Like(findOptions.name)
+        if(findOptions?.name){
+            where.name = Like(`%${findOptions.name}%`)
         }
 
-        if(findOptions.retailPrice) {
-            where.retailPrice = Between(findOptions.retailPrice.min, findOptions.retailPrice.max);
+        if(findOptions?.retailPrice) {
+            where.retailPrice = Between(findOptions.retailPrice.min || 0, findOptions.retailPrice.max || Number.MAX_VALUE);
         }
 
-        if(findOptions.description){
-            where.description = Like(findOptions.description);
+        if(findOptions?.description){
+            where.description = Like(`%${findOptions.description}%`);
         }
 
         if(findOptions.height){
-            where.height = Between(findOptions.height.min, findOptions.height.max)
+            where.height = Between(findOptions.height.min || 0, findOptions.height.max || Number.MAX_VALUE)
         }
 
         if(findOptions.width) {
-            where.width = Between(findOptions.width.min, findOptions.width.max)
+            where.width = Between(findOptions.width.min || 0, findOptions.width.max || Number.MAX_VALUE)
         }
 
         if(findOptions.length) {
-            where.length = Between(findOptions.length.min, findOptions.length.max)
+            where.length = Between(findOptions.length.min || 0, findOptions.length.max || Number.MAX_VALUE)
         }
 
         if(findOptions.sizes) {
@@ -57,12 +59,15 @@ export class ProductService{
         }
 
         if(findOptions.amount) {
-            where.amount = Between(findOptions.amount.min, findOptions.amount.max)
+            where.amount = Between(findOptions.amount.min || 0, findOptions.amount.max || Number.MAX_VALUE)
         }
 
-
-
-        return this.productRepository.find({where:where,skip:findOptions.skip, take:findOptions.take, relations:{images:true, categories:true}})
+        if(findOptions.categories) {
+            const ids = (await this.productCategoryServices.getProductCategories(findOptions.categories)).map((category) => category.id);
+            where.categories = {id: In(ids)}
+        }
+        
+        return this.productRepository.find({where:where, skip:findOptions.skip, take:findOptions.take, relations:{images:true, categories:true}})
     }
 
     async createProduct(product:CreateProductInput){

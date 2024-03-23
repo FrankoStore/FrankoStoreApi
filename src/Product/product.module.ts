@@ -5,10 +5,12 @@ import { Product } from "./entities/product.entity";
 import { ProductCategory } from "../ProductCategory/entities/product-category";
 import { ProductResolver } from "./product.resolver";
 import { ProductService } from "./product.service";
+import { ProductCategoryModule } from "src/ProductCategory/product-category.module";
 
 
 @Module({
-    imports:[FileModule,DatabaseModule.forFeature([Product, ProductCategory])],
-    providers:[ProductResolver, ProductService]
+    imports: [FileModule, DatabaseModule.forFeature([Product, ProductCategory]), ProductCategoryModule],
+    providers: [ProductResolver, ProductService],
+    exports: [ProductService]
 })
-export class ProductModule{}
+export class ProductModule { }

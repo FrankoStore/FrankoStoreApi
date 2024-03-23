@@ -14,26 +14,26 @@ export class ProductCategoryService{
       private readonly productCategoryRepository:Repository<ProductCategory>
    ){}
 
-   async getProductCategories(findOptions: FindOptionsProductCategoryInput){
+   async getProductCategories(findOptions?: FindOptionsProductCategoryInput){
       const where: FindOptionsWhere<ProductCategory> = {};
 
-      if(findOptions.ids){
+      if(findOptions?.ids){
          where.id = In(findOptions.ids)
       }
 
-      if(findOptions.name){
-         where.name = Like(findOptions.name);
+      if(findOptions?.name){
+         where.name = Like(`%${findOptions.name}%`);
       }
 
-      if(findOptions.startDateRange){
+      if(findOptions?.startDateRange){
          where.startDateRange = findOptions.startDateRange;
       }
 
-      if(findOptions.endDateRange){
+      if(findOptions?.endDateRange){
          where.endDateRange = findOptions.endDateRange;
       }
 
-      this.productCategoryRepository.find({where: where})
+      return this.productCategoryRepository.find({where: where})
    }
 
    async createProductCategory(productCategory:CreateProductCategoryInput){

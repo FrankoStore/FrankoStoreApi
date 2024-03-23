@@ -6,6 +6,7 @@ import { DatabaseModule } from "src/common/Database/database.module";
 
 @Module({
    imports:[DatabaseModule.forFeature([ProductCategory])],
-   providers:[ProductCategoryService, ProductCategoryResolver]
+   providers:[ProductCategoryService, ProductCategoryResolver],
+   exports: [ProductCategoryService]
 })
 export class ProductCategoryModule{}

@@ -8,11 +8,12 @@ import { InitModule } from './Init/init.module';
 import { ProductModule } from './Product/product.module';
 import { ProductCategoryModule } from 'src/ProductCategory/product-category.module';
 import { SupplierModule } from 'src/Supplier/supplier.module';
+import { ProcurementInformationModule } from 'src/ProcurementInformation/procurement-information.module';
 
 @Module({
   imports: [
     ConfigurationModule, GQLModule, DatabaseModule,
     InitModule, AuthModule, UserModule,
-    ProductModule, ProductCategoryModule, SupplierModule],
+    ProductModule, ProductCategoryModule, SupplierModule, ProcurementInformationModule],
 })
 export class AppModule { }
