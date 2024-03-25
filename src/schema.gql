@@ -12,6 +12,11 @@ type AuthenticationPayload {
   refreshToken: String!
 }
 
+input CreateDiscoutTypeInput {
+  name: String!
+  percentage: Float!
+}
+
 input CreateFileInput {
   file: String!
   fileExtension: String!
@@ -121,13 +126,17 @@ input FindOptionsProductInput {
 }
 
 type Mutation {
+  createDiscountType(discountType: CreateDiscoutTypeInput!): DiscountType!
   createProcurementInformation(procurementInformation: CreateProcurementInformationInput!): ProcurementInformation!
   createProduct(product: CreateProductInput!): Product!
   createProductCategory(productCategory: CreateProductCategoryInput!): ProductCategory!
   createSupplier(supplier: CreateSupplierInput!): Supplier!
+  grantDiscountTypeForUser(discountTypeId: Float!, userId: Float!): User!
+  grantDiscountTypeOnProduct(discountTypeId: Float!, productId: Float!): Product!
   login(authenticationInput: AuthenticationInput!): AuthenticationPayload!
   refresh: AuthenticationPayload!
   register(user: CreateUserInput!): AuthenticationPayload!
+  updateDiscountType(discountType: UpdateDiscountTypeInput!, id: Float!): DiscountType!
   updateMyUser(user: UpdateUserInput!): User!
   updateProcurementInformation(id: Float!, procurementInformation: UpdateProcurementInformationInput!): ProcurementInformation!
   updateProduct(id: Float!, product: UpdateProductInput!): Product!
@@ -155,6 +164,7 @@ type Product {
   amount: Float!
   categories: [ProductCategory!]!
   description: String!
+  discountType: DiscountType!
   height: Float!
   images: [File!]!
   length: Float!
@@ -202,6 +212,11 @@ type Supplier {
   email: String!
   phoneNumber: String!
   website: String!
+}
+
+input UpdateDiscountTypeInput {
+  name: String
+  percentage: Float
 }
 
 input UpdateProcurementInformationInput {

@@ -9,11 +9,12 @@ import { ProductModule } from './Product/product.module';
 import { ProductCategoryModule } from 'src/ProductCategory/product-category.module';
 import { SupplierModule } from 'src/Supplier/supplier.module';
 import { ProcurementInformationModule } from 'src/ProcurementInformation/procurement-information.module';
+import { DiscountTypeModule } from 'src/DiscountType/discount-type.module';
 
 @Module({
   imports: [
     ConfigurationModule, GQLModule, DatabaseModule,
     InitModule, AuthModule, UserModule,
-    ProductModule, ProductCategoryModule, SupplierModule, ProcurementInformationModule],
+    ProductModule, ProductCategoryModule, SupplierModule, ProcurementInformationModule, DiscountTypeModule],
 })
 export class AppModule { }
