@@ -8,54 +8,54 @@ import { FindOptionsWhere, In, Like, Repository } from "typeorm";
 
 
 @Injectable()
-export class ProductCategoryService{
+export class ProductCategoryService {
    constructor(
       @InjectRepository(ProductCategory)
-      private readonly productCategoryRepository:Repository<ProductCategory>
-   ){}
+      private readonly productCategoryRepository: Repository<ProductCategory>
+   ) { }
 
-   async getProductCategories(findOptions?: FindOptionsProductCategoryInput){
+   async getProductCategories(findOptions?: FindOptionsProductCategoryInput) {
       const where: FindOptionsWhere<ProductCategory> = {};
 
-      if(findOptions?.ids){
+      if (findOptions?.ids) {
          where.id = In(findOptions.ids)
       }
 
-      if(findOptions?.name){
+      if (findOptions?.name) {
          where.name = Like(`%${findOptions.name}%`);
       }
 
-      if(findOptions?.startDateRange){
+      if (findOptions?.startDateRange) {
          where.startDateRange = findOptions.startDateRange;
       }
 
-      if(findOptions?.endDateRange){
+      if (findOptions?.endDateRange) {
          where.endDateRange = findOptions.endDateRange;
       }
 
-      return this.productCategoryRepository.find({where: where})
+      return this.productCategoryRepository.find({ where: where })
    }
 
-   async createProductCategory(productCategory:CreateProductCategoryInput){
+   async createProductCategory(productCategory: CreateProductCategoryInput) {
       const newProductCategory = new ProductCategory({
-         name:productCategory.name,
+         name: productCategory.name,
          startDateRange: productCategory.startDateRange,
          endDateRange: productCategory.endDateRange
       });
 
-      this.productCategoryRepository.save(newProductCategory);
+      return this.productCategoryRepository.save(newProductCategory);
    }
 
-   async updateProductCategory(id:number, productCategory: UpdateProductCategoryInput){
-      const newProductCategory = await this.productCategoryRepository.findOne({where:{id:id}});
+   async updateProductCategory(id: number, productCategory: UpdateProductCategoryInput) {
+      const newProductCategory = await this.productCategoryRepository.findOne({ where: { id: id } });
 
-      if(!newProductCategory) throw new BadRequestException("No product category with such id!");
+      if (!newProductCategory) throw new BadRequestException("No product category with such id!");
 
       newProductCategory.name = productCategory.name ? productCategory.name : newProductCategory.name;
 
-      newProductCategory.endDateRange = 
+      newProductCategory.endDateRange =
          productCategory.endDateRange ? productCategory.endDateRange : newProductCategory.endDateRange;
-      newProductCategory.startDateRange = 
+      newProductCategory.startDateRange =
          productCategory.startDateRange ? productCategory.startDateRange : newProductCategory.startDateRange;
 
       this.productCategoryRepository.save(newProductCategory);
