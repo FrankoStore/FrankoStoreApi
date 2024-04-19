@@ -81,6 +81,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type DiscountType {
+  id: Float!
   name: String!
   percentage: Float!
 }
@@ -153,6 +154,7 @@ type ProcurementInformation {
   amount: Float!
   deliveredDate: DateTime
   description: String!
+  id: Float!
   isDelivered: DateTime!
   orderedDate: DateTime!
   product: Product!
@@ -166,6 +168,7 @@ type Product {
   description: String!
   discountType: DiscountType!
   height: Float!
+  id: Float!
   images: [File!]!
   length: Float!
   name: String!
@@ -176,6 +179,7 @@ type Product {
 
 type ProductCategory {
   endDateRange: DateTime
+  id: Float!
   name: String!
   startDateRange: DateTime
 }
@@ -189,6 +193,7 @@ type Query {
 }
 
 type Role {
+  id: Float!
   name: String!
 }
 
@@ -210,6 +215,7 @@ type Supplier {
   address: String!
   companyName: String!
   email: String!
+  id: Float!
   phoneNumber: String!
   website: String!
 }
