@@ -24,6 +24,12 @@ input CreateFileInput {
   fileSize: Float!
 }
 
+input CreateMessageInput {
+  email: String!
+  phoneNumber: String!
+  textMessage: String!
+}
+
 input CreateProcurementInformationInput {
   amount: Float!
   description: String!
@@ -95,6 +101,16 @@ type File {
   updatedAt: DateTime!
 }
 
+input FindOptionsMessageInput {
+  emails: [String!]
+  ids: [Float!]
+  phoneNumbers: [String!]
+  recevicedDate: DateRangeInput
+  search: String
+  skip: Int
+  take: Int
+}
+
 input FindOptionsProcurementInformationInput {
   amount: NumericRangeInput!
   description: String!
@@ -126,6 +142,23 @@ input FindOptionsProductInput {
   width: NumericRangeInput
 }
 
+type Message {
+  email: String!
+  id: Float!
+  messageStatus: MessageStatusEnum!
+  phoneNumber: String!
+  receivedDate: DateTime!
+  textMessage: String!
+}
+
+enum MessageStatusEnum {
+  Active
+  Banned
+  OnHold
+  Readed
+  Solved
+}
+
 type Mutation {
   createDiscountType(discountType: CreateDiscoutTypeInput!): DiscountType!
   createProcurementInformation(procurementInformation: CreateProcurementInformationInput!): ProcurementInformation!
@@ -137,7 +170,9 @@ type Mutation {
   login(authenticationInput: AuthenticationInput!): AuthenticationPayload!
   refresh: AuthenticationPayload!
   register(user: CreateUserInput!): AuthenticationPayload!
+  sentMessage(message: CreateMessageInput!): Message!
   updateDiscountType(discountType: UpdateDiscountTypeInput!, id: Float!): DiscountType!
+  updateMessage(id: Float!, message: UpdateMessageInput!): Message!
   updateMyUser(user: UpdateUserInput!): User!
   updateProcurementInformation(id: Float!, procurementInformation: UpdateProcurementInformationInput!): ProcurementInformation!
   updateProduct(id: Float!, product: UpdateProductInput!): Product!
@@ -185,6 +220,7 @@ type ProductCategory {
 }
 
 type Query {
+  getMessages(findOptions: FindOptionsMessageInput): [Message!]!
   getMysUser: User!
   getProcrumentInformations(findOptions: FindOptionsProcurementInformationInput): [ProcurementInformation!]!
   getProductCategories(findOptions: FindOptionsProductCategoryInput): [ProductCategory!]!
@@ -223,6 +259,13 @@ type Supplier {
 input UpdateDiscountTypeInput {
   name: String
   percentage: Float
+}
+
+input UpdateMessageInput {
+  email: String
+  messageStatus: MessageStatusEnum!
+  phoneNumber: String
+  textMessage: String
 }
 
 input UpdateProcurementInformationInput {
