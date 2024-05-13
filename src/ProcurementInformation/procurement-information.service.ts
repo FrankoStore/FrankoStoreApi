@@ -52,7 +52,7 @@ export class ProcurementInformationService {
          where.supplier = { companyName: Like(`%${findOptions.supplierCompanyName}%`) }
       }
 
-      return this.procurementInformationRepository.find({ where: where })
+      return this.procurementInformationRepository.find({ where: where, relations: { product: true, supplier: true } })
    }
 
    async createProcurementInformation(procurementInformation: CreateProcurementInformationInput) {
