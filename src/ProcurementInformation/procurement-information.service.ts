@@ -91,5 +91,6 @@ export class ProcurementInformationService {
       newProcurementInformation.supplier = procurementInformation.supplierId ?
          await this.supplierRepository.findOneOrFail({ where: { id: procurementInformation.supplierId } }) : newProcurementInformation.supplier;
 
+      return this.procurementInformationRepository.save(newProcurementInformation);
    }
 }

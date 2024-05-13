@@ -8,10 +8,11 @@ import { AuthenticationInput } from './inputs/authentication.input';
 import { CheckExistingUserPipe } from 'src/User/pipes/check-existing-user.pipe';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/User/entities/user.entity';
+import { ResetPasswordInput } from 'src/Auth/inputs/reset-password.input';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authenticateService: AuthService) {}
+  constructor(private readonly authenticateService: AuthService) { }
 
   @Mutation(() => AuthenticationPayload)
   async login(@Args('authenticationInput') authenticationInput: AuthenticationInput) {
@@ -39,5 +40,13 @@ export class AuthResolver {
     if (!user) throw new UnauthorizedException();
 
     return await this.authenticateService.refresh(user.id);
+  }
+
+  @UseGuards(RefreshJwtAuthenticationGuard)
+  @Mutation(() => AuthenticationPayload)
+  async resetPassword(@CurrentUser() user: User, @Args('resetPasswordInput') resetPasswordInput: ResetPasswordInput) {
+    if (!user) throw new UnauthorizedException();
+
+    return await this.authenticateService.resetPassword(user.id, resetPasswordInput);
   }
 }

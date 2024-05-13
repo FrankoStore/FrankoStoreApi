@@ -1,5 +1,5 @@
 import { UserPayload } from './models/user.payload.model';
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { AuthenticationInput } from './inputs/authentication.input';
 import { User } from 'src/User/entities/user.entity';
 import { CreateUserInput } from 'src/User/inputs/create-user.input';
@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { Role } from 'src/User/entities/role.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticationPayload } from './models/authentication-payload.model';
+import { ResetPasswordInput } from 'src/Auth/inputs/reset-password.input';
 
 @Injectable()
 export class AuthService {
@@ -63,6 +64,17 @@ export class AuthService {
     if (!user) throw new NotFoundException("User doesn't exist in database");
 
     return this.createTokens(user);
+  }
+
+  public async resetPassword(userId: number, resetPasswordInput: ResetPasswordInput): Promise<AuthenticationPayload> {
+    const user = await this.userRepository.findOneOrFail({ where: { id: userId } })
+    const isValidPassword: boolean = await bcrypt.compare(resetPasswordInput.oldPassword, user.passwordHash);
+    if (isValidPassword) {
+      user.passwordHash = await bcrypt.hash(resetPasswordInput.newPassword, this.configService.get<number>('SALT_ROUNDS'));
+      return this.createTokens(await this.userRepository.save(user))
+    }
+
+    throw new BadRequestException("Wrong password!");
   }
 
   private createTokens(user: User): AuthenticationPayload {

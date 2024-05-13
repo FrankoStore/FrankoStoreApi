@@ -6,18 +6,18 @@ import { UpdateSupplierInput } from "src/Supplier/inputs/update-supplier.input";
 import { Repository } from "typeorm";
 
 @Injectable()
-export class SupplierService{
+export class SupplierService {
    constructor(
       @InjectRepository(Supplier)
       private readonly supplierRepository: Repository<Supplier>
-   ){}
+   ) { }
 
 
-   async getSuppliers(){
+   async getSuppliers() {
       return this.supplierRepository.find({});
    }
 
-   async createSupplier(supplier: CreateSupplierInput){
+   async createSupplier(supplier: CreateSupplierInput) {
       const newSupplier = new Supplier({
          address: supplier.address,
          companyName: supplier.companyName,
@@ -26,13 +26,13 @@ export class SupplierService{
          website: supplier.website
       })
 
-      this.supplierRepository.save(newSupplier);
+      return this.supplierRepository.save(newSupplier);
    }
 
-   async updateSupplier(id: number, supplier: UpdateSupplierInput){
-      const newSupplier = await this.supplierRepository.findOne({where:{id:id}});
+   async updateSupplier(id: number, supplier: UpdateSupplierInput) {
+      const newSupplier = await this.supplierRepository.findOne({ where: { id: id } });
 
-      if(!newSupplier){
+      if (!newSupplier) {
          throw new BadRequestException("No supplier with such id!");
       }
 

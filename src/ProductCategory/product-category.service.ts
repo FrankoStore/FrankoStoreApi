@@ -58,6 +58,6 @@ export class ProductCategoryService {
       newProductCategory.startDateRange =
          productCategory.startDateRange ? productCategory.startDateRange : newProductCategory.startDateRange;
 
-      this.productCategoryRepository.save(newProductCategory);
+      return this.productCategoryRepository.save(newProductCategory);
    }
 }

@@ -170,6 +170,7 @@ type Mutation {
   login(authenticationInput: AuthenticationInput!): AuthenticationPayload!
   refresh: AuthenticationPayload!
   register(user: CreateUserInput!): AuthenticationPayload!
+  resetPassword(resetPasswordInput: ResetPasswordInput!): AuthenticationPayload!
   sentMessage(message: CreateMessageInput!): Message!
   updateDiscountType(discountType: UpdateDiscountTypeInput!, id: Float!): DiscountType!
   updateMessage(id: Float!, message: UpdateMessageInput!): Message!
@@ -226,6 +227,11 @@ type Query {
   getProductCategories(findOptions: FindOptionsProductCategoryInput): [ProductCategory!]!
   getProducts(findOptions: FindOptionsProductInput): [Product!]!
   getSuppliers: [Supplier!]!
+}
+
+input ResetPasswordInput {
+  newPassword: String!
+  oldPassword: String!
 }
 
 type Role {
