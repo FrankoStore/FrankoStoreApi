@@ -28,11 +28,12 @@ const envFilePath: string = getEnvPath(`${__dirname}/../../../src/common/envs`);
         AWS_ACCESS_SECRET: Joi.string().required(),
         AWS_REGION: Joi.string().required(),
         HTTP_PORT: Joi.number().required(),
+        NOVA_POST_API_KEY: Joi.string().required()
       }),
     }),
   ],
 })
-export class ConfigurationModule {}
+export class ConfigurationModule { }
 
 function getEnvPath(dest: string): string {
   const env: string | undefined = process.env.NODE_ENV;

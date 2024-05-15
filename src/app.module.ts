@@ -11,13 +11,14 @@ import { SupplierModule } from 'src/Supplier/supplier.module';
 import { ProcurementInformationModule } from 'src/ProcurementInformation/procurement-information.module';
 import { DiscountTypeModule } from 'src/DiscountType/discount-type.module';
 import { MessageModule } from 'src/Message/message.module';
+import { NovaPostModule } from 'src/NovaPost/nova-post.module';
 
 @Module({
   imports: [
     ConfigurationModule, GQLModule, DatabaseModule,
     InitModule, AuthModule, UserModule,
     ProductModule, ProductCategoryModule, SupplierModule, ProcurementInformationModule, DiscountTypeModule,
-    MessageModule
+    MessageModule, NovaPostModule
   ],
 })
 export class AppModule { }

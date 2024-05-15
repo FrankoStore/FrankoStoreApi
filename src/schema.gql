@@ -226,7 +226,10 @@ type Query {
   getProcrumentInformations(findOptions: FindOptionsProcurementInformationInput): [ProcurementInformation!]!
   getProductCategories(findOptions: FindOptionsProductCategoryInput): [ProductCategory!]!
   getProducts(findOptions: FindOptionsProductInput): [Product!]!
+  getSettlements(cityName: String!): String!
+  getStreets(limit: Float!, settlementRef: String!, streetName: String!): String!
   getSuppliers: [Supplier!]!
+  getWarehouses(cityName: String!, limit: Float!, streetName: String!): String!
 }
 
 input ResetPasswordInput {
