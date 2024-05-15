@@ -1,12 +1,12 @@
 import { ConflictException, Injectable, PipeTransform } from '@nestjs/common';
-import { CreateUserInput } from '../inputs/create-user.input';
+import { CreateUserInput } from './inputs/create-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class CheckExistingUserPipe implements PipeTransform<CreateUserInput, Promise<CreateUserInput>> {
-  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) { }
 
   async transform(value: CreateUserInput): Promise<CreateUserInput> {
     const user: User | null = await this.userRepository

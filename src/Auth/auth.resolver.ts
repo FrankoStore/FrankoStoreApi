@@ -5,7 +5,7 @@ import { CreateUserInput } from 'src/User/inputs/create-user.input';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthenticationPayload } from './models/authentication-payload.model';
 import { AuthenticationInput } from './inputs/authentication.input';
-import { CheckExistingUserPipe } from 'src/User/pipes/check-existing-user.pipe';
+import { CheckExistingUserPipe } from 'src/User/check-existing-user.pipe';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/User/entities/user.entity';
 import { ResetPasswordInput } from 'src/Auth/inputs/reset-password.input';
