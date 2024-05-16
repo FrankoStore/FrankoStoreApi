@@ -9,6 +9,7 @@ import { CheckExistingUserPipe } from 'src/User/check-existing-user.pipe';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/User/entities/user.entity';
 import { ResetPasswordInput } from 'src/Auth/inputs/reset-password.input';
+import { AccessJwtAuthenticationGuard } from 'src/Auth/guards/access-jwt-authentication.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -42,7 +43,7 @@ export class AuthResolver {
     return await this.authenticateService.refresh(user.id);
   }
 
-  @UseGuards(RefreshJwtAuthenticationGuard)
+  @UseGuards(AccessJwtAuthenticationGuard)
   @Mutation(() => AuthenticationPayload)
   async resetPassword(@CurrentUser() user: User, @Args('resetPasswordInput') resetPasswordInput: ResetPasswordInput) {
     if (!user) throw new UnauthorizedException();
