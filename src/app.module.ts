@@ -12,13 +12,15 @@ import { ProcurementInformationModule } from 'src/ProcurementInformation/procure
 import { DiscountTypeModule } from 'src/DiscountType/discount-type.module';
 import { MessageModule } from 'src/Message/message.module';
 import { NovaPostModule } from 'src/NovaPost/nova-post.module';
+import { LiqPayModule } from 'src/LiqPay/liqpay.module';
+import { OrderModule } from 'src/Order/order.module';
 
 @Module({
   imports: [
     ConfigurationModule, GQLModule, DatabaseModule,
     InitModule, AuthModule, UserModule,
     ProductModule, ProductCategoryModule, SupplierModule, ProcurementInformationModule, DiscountTypeModule,
-    MessageModule, NovaPostModule
+    MessageModule, NovaPostModule, OrderModule, LiqPayModule,
   ],
 })
 export class AppModule { }

@@ -9,7 +9,7 @@ import { DiscountType } from "src/DiscountType/entities/discount-type";
 
 @ObjectType()
 @Entity({ name: "Product" })
-export class Product extends EntityBase<Product>{
+export class Product extends EntityBase<Product> {
 
     @Field(() => String)
     @Column('varchar', { name: "Name", unique: true, length: 255 })
@@ -53,7 +53,7 @@ export class Product extends EntityBase<Product>{
     @JoinTable({ name: "ProductImage" })
     images: File[];
 
-    @Field(() => DiscountType)
+    @Field(() => DiscountType, { nullable: true })
     @ManyToOne(() => DiscountType, { nullable: true })
     @JoinColumn({ name: "DiscountType" })
     discountType: DiscountType;

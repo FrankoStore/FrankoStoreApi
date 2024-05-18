@@ -1,4 +1,6 @@
+import { UseGuards } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { AccessJwtAuthenticationGuard } from "src/Auth/guards/access-jwt-authentication.guard";
 import { Message } from "src/Message/entities/message.entity";
 import { CreateMessageInput } from "src/Message/inputs/create-message.input";
 import { FindOptionsMessageInput } from "src/Message/inputs/find-options-message.input";
@@ -7,6 +9,7 @@ import { MessageService } from "src/Message/message.service";
 
 
 @Resolver()
+@UseGuards(AccessJwtAuthenticationGuard)
 export class MessageResolver {
    constructor(
       private readonly messageService: MessageService

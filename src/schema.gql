@@ -30,6 +30,12 @@ input CreateMessageInput {
   textMessage: String!
 }
 
+input CreateOrderInput {
+  deliveryAddress: String
+  isSelfDelivery: Boolean!
+  products: [ProductQuantityInput!]!
+}
+
 input CreateProcurementInformationInput {
   amount: Float!
   description: String!
@@ -111,6 +117,18 @@ input FindOptionsMessageInput {
   take: Int
 }
 
+input FindOptionsOrderInput {
+  createdAt: DateRangeInput
+  customerIds: [Float!]
+  executorIds: [Float!]
+  ids: [Float!]
+  skip: Int
+  statuses: [OrderStatusEnum!]
+  summaryPayment: NumericRangeInput
+  take: Int
+  updatedAt: DateRangeInput
+}
+
 input FindOptionsProcurementInformationInput {
   amount: NumericRangeInput!
   description: String!
@@ -160,7 +178,9 @@ enum MessageStatusEnum {
 }
 
 type Mutation {
+  capturePayment(orderId: Float!): Float!
   createDiscountType(discountType: CreateDiscoutTypeInput!): DiscountType!
+  createOrder(order: CreateOrderInput!): Order!
   createProcurementInformation(procurementInformation: CreateProcurementInformationInput!): ProcurementInformation!
   createProduct(product: CreateProductInput!): Product!
   createProductCategory(productCategory: CreateProductCategoryInput!): ProductCategory!
@@ -170,6 +190,7 @@ type Mutation {
   login(authenticationInput: AuthenticationInput!): AuthenticationPayload!
   refresh: AuthenticationPayload!
   register(user: CreateUserInput!): AuthenticationPayload!
+  releasePayment(orderId: Float!): Float!
   resetPassword(resetPasswordInput: ResetPasswordInput!): AuthenticationPayload!
   sentMessage(message: CreateMessageInput!): Message!
   updateDiscountType(discountType: UpdateDiscountTypeInput!, id: Float!): DiscountType!
@@ -184,6 +205,53 @@ type Mutation {
 input NumericRangeInput {
   max: Float
   min: Float
+}
+
+type Order {
+  createdAt: DateTime!
+  customer: User!
+  deliveryAddress: String
+  executor: User
+  id: Float!
+  isSelfDelivery: Boolean!
+  paymentUrl: String
+  products: [ProductQuantity!]!
+  status: OrderStatusEnum!
+  summaryPayment: Float!
+  updatedAt: DateTime!
+}
+
+enum OrderStatusEnum {
+  captcha_verify
+  cash_wait
+  cvv_verify
+  error
+  failure
+  hold_wait
+  invoice_wait
+  ivr_verify
+  otp_verify
+  password_verify
+  phone_verify
+  pin_verify
+  prepared
+  processing
+  receiver_verify
+  reversed
+  sender_verify
+  senderapp_verify
+  subscribed
+  success
+  three_ds_verify
+  unsubscribed
+  wait_accept
+  wait_card
+  wait_compensation
+  wait_lc
+  wait_qr
+  wait_reserve
+  wait_secure
+  wait_sender
 }
 
 type ProcurementInformation {
@@ -202,7 +270,7 @@ type Product {
   amount: Float!
   categories: [ProductCategory!]!
   description: String!
-  discountType: DiscountType!
+  discountType: DiscountType
   height: Float!
   id: Float!
   images: [File!]!
@@ -220,9 +288,20 @@ type ProductCategory {
   startDateRange: DateTime
 }
 
+type ProductQuantity {
+  product: Product!
+  quantity: Float!
+}
+
+input ProductQuantityInput {
+  productId: Int!
+  quantity: Int!
+}
+
 type Query {
   getMessages(findOptions: FindOptionsMessageInput): [Message!]!
   getMysUser: User!
+  getOrders(findOptions: FindOptionsOrderInput): [Order!]!
   getProcrumentInformations(findOptions: FindOptionsProcurementInformationInput): [ProcurementInformation!]!
   getProductCategories(findOptions: FindOptionsProductCategoryInput): [ProductCategory!]!
   getProducts(findOptions: FindOptionsProductInput): [Product!]!
