@@ -1,5 +1,5 @@
 import axios from 'axios';
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 
 export class LiqPay {
 
@@ -121,8 +121,7 @@ export class LiqPay {
       if (typeof str !== 'string') {
          throw new Error('Input must be a string');
       }
-
-      const sha1 = crypto.createHash('sha1');
+      const sha1 = createHash('sha1');
       sha1.update(str);
       return sha1.digest('base64');
    };

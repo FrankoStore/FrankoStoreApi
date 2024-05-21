@@ -29,8 +29,8 @@ const envFilePath: string = getEnvPath(`${__dirname}/../../../src/common/envs`);
         AWS_REGION: Joi.string().required(),
         HTTP_PORT: Joi.number().required(),
         NOVA_POST_API_KEY: Joi.string().required(),
-        //PUBLIC_LIQPAY_KEY: Joi.string().required(),
-        //PRIVATE_LIQPAY_KEY: Joi.string().required()
+        PUBLIC_LIQPAY_KEY: Joi.string().required(),
+        PRIVATE_LIQPAY_KEY: Joi.string().required()
       }),
     }),
   ],

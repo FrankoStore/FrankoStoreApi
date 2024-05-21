@@ -42,27 +42,27 @@ export class ProductService {
             where.description = Like(`%${findOptions.description}%`);
         }
 
-        if (findOptions.height) {
+        if (findOptions?.height) {
             where.height = Between(findOptions.height.min || 0, findOptions.height.max || Number.MAX_VALUE)
         }
 
-        if (findOptions.width) {
+        if (findOptions?.width) {
             where.width = Between(findOptions.width.min || 0, findOptions.width.max || Number.MAX_VALUE)
         }
 
-        if (findOptions.length) {
+        if (findOptions?.length) {
             where.length = Between(findOptions.length.min || 0, findOptions.length.max || Number.MAX_VALUE)
         }
 
-        if (findOptions.sizes) {
+        if (findOptions?.sizes) {
             where.size = In(findOptions.sizes);
         }
 
-        if (findOptions.amount) {
+        if (findOptions?.amount) {
             where.amount = Between(findOptions.amount.min || 0, findOptions.amount.max || Number.MAX_VALUE)
         }
 
-        if (findOptions.categories) {
+        if (findOptions?.categories) {
             const ids = (await this.productCategoryServices.getProductCategories(findOptions.categories)).map((category) => category.id);
             where.categories = { id: In(ids) }
         }

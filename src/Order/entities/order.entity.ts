@@ -48,4 +48,7 @@ export class Order extends EntityBase<Order> {
 
    @Field(() => String, { nullable: true })
    paymentUrl: string;
+
+   @Field(() => Boolean, { defaultValue: false })
+   isPaid: boolean;
 }

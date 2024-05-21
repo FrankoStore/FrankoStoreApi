@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
-import { IsEnum, IsNumber, IsOptional } from "class-validator";
+import { IsBoolean, IsEnum, IsNumber, IsOptional } from "class-validator";
 import { OrderStatusEnum } from "src/Order/enums/order-status.enum";
 import { DateRangeInput } from "src/common/filter-input-types/date-rage.input";
 import { NumericRangeInput } from "src/common/filter-input-types/numeric-range.input";
@@ -48,4 +48,9 @@ export class FindOptionsOrderInput {
    @IsOptional()
    @IsNumber()
    take?: number;
+
+   @Field(() => Boolean, { nullable: true })
+   @IsOptional()
+   @IsBoolean()
+   isPaid?: boolean;
 }

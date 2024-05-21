@@ -14,24 +14,24 @@ import { RoleEnum } from "src/User/enums/role.enum";
 
 @Resolver()
 @UseGuards(AccessJwtAuthenticationGuard, RoleAuthorizationGuard)
-export class ProductResolver{
-    constructor(private readonly productService:ProductService) {}
+export class ProductResolver {
+    constructor(private readonly productService: ProductService) { }
 
     @Query(() => [Product])
     @Public()
-    async getProducts(@Args('findOptions', {nullable:true}) findOptions:FindOptionsProductInput){
+    async getProducts(@Args('findOptions', { nullable: true }) findOptions: FindOptionsProductInput) {
         return await this.productService.getProducts(findOptions);
     }
-    
+
     @Mutation(() => Product)
     @Roles(RoleEnum.Admin, RoleEnum.Manager)
-    async createProduct(@Args('product') product: CreateProductInput){
+    async createProduct(@Args('product') product: CreateProductInput) {
         return this.productService.createProduct(product);
     }
 
     @Mutation(() => Product)
     @Roles(RoleEnum.Admin, RoleEnum.Manager)
-    async updateProduct(@Args('id') id: number, @Args('product') product: UpdateProductInput){
+    async updateProduct(@Args('id') id: number, @Args('product') product: UpdateProductInput) {
         return this.productService.updateProduct(id, product);
     }
 }

@@ -6,7 +6,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Currency, PaymentAction, PaymentData } from "src/LiqPay/dtos/payment-data";
 import { OrderStatusEnum } from "src/Order/enums/order-status.enum";
-import crypto from 'crypto'
+import { createHash } from 'crypto'
 
 @Injectable()
 export class LiqPayService {
@@ -30,28 +30,37 @@ export class LiqPayService {
       paymentData.order_id = order.id;
       paymentData.action = PaymentAction.Hold;
 
-      const response = await this.liqpay.api('request', paymentData);
-
-      return response.checkout_url;
+      //const response = await this.liqpay.api('request', paymentData);
+      return this.liqpay.cnb_form(paymentData);
    }
 
    async capturePayment(orderId: number) {
-      return this.liqpay.api('request', {
-         action: PaymentAction.Capture,
-         version: '3',
-         order_id: orderId,
-      });
+      const paymentStatus = (await this.getPaymentStatus(orderId)).status;
+      if (OrderStatusEnum[paymentStatus] === OrderStatusEnum.hold_wait) {
+         return this.liqpay.api('request', {
+            action: PaymentAction.Capture,
+            version: '3',
+            order_id: orderId,
+         });
+      }
+      throw new BadRequestException("Can't make this operation!")
    }
 
    async releasePayment(orderId: number) {
-      return this.liqpay.api('request', {
-         action: PaymentAction.Release,
-         version: '3',
-         order_id: orderId,
-      });
+      const paymentStatus = (await this.getPaymentStatus(orderId)).status;
+      if (OrderStatusEnum[paymentStatus] === OrderStatusEnum.hold_wait) {
+         return this.liqpay.api('request', {
+            action: PaymentAction.Release,
+            version: '3',
+            order_id: orderId,
+         });
+      }
+      throw new BadRequestException("Can't make this operation!")
+
    }
 
    async getPaymentStatus(orderId: number) {
+
       return this.liqpay.api('request', {
          action: PaymentAction.Status,
          version: '3',
@@ -59,11 +68,11 @@ export class LiqPayService {
       });
    }
 
+
    async processCallback(data: string, receivedSignature: string) {
       const privateKey = this.configService.get<string>('PRIVATE_LIQPAY_KEY');
 
-      const expectedSignature = crypto
-         .createHash('sha1')
+      const expectedSignature = createHash('sha1')
          .update(privateKey + data + privateKey)
          .digest('base64');
 

@@ -63,6 +63,8 @@ export class OrderService {
          for (const orderProduct of orderProducts) {
             order.products.push({ product: orderProduct.product, quantity: orderProduct.quantity })
          }
+         order.paymentUrl = await this.liqPayService.initiatePayment(order);
+         order.isPaid = await this.isPaidOrder(order.id);
       }
 
       return orders;
@@ -111,8 +113,7 @@ export class OrderService {
 
       newOrder.products = products;
 
-      //newOrder.paymentUrl = await this.liqPayService.initiatePayment(newOrder);
-
+      newOrder.paymentUrl = await this.liqPayService.initiatePayment(newOrder);
       return newOrder;
 
    }
@@ -124,7 +125,7 @@ export class OrderService {
       order.executor = executor;
       order.status = OrderStatusEnum.success;
 
-      //await this.liqPayService.capturePayment(orderId);
+      await this.liqPayService.capturePayment(orderId);
 
       return this.orderRepository.save(order);
    }
@@ -136,8 +137,12 @@ export class OrderService {
       order.executor = executor;
       order.status = OrderStatusEnum.reversed;
 
-      //await this.liqPayService.releasePayment(orderId);
-
+      await this.liqPayService.releasePayment(orderId);
       return this.orderRepository.save(order);
+   }
+
+   async isPaidOrder(orderId: number) {
+      const paymentStatus = (await this.liqPayService.getPaymentStatus(orderId)).status;
+      return OrderStatusEnum[paymentStatus] === OrderStatusEnum.hold_wait
    }
 }
