@@ -301,6 +301,8 @@ input ProductQuantityInput {
 }
 
 type Query {
+  getCities(findString: String!): String!
+  getCityStreets(cityRef: String!, findString: String!): String!
   getMessages(findOptions: FindOptionsMessageInput): [Message!]!
   getMysUser: User!
   getOrders(findOptions: FindOptionsOrderInput): [Order!]!

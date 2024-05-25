@@ -10,28 +10,54 @@ import { FindOptionsProductInput } from "./inputs/find-options-product.input";
 import { Public } from "src/Auth/decorators/public.decorator";
 import { Roles } from "src/Auth/decorators/roles.decorator";
 import { RoleEnum } from "src/User/enums/role.enum";
-
+import { FileService } from "src/File/file.service";
 
 @Resolver()
 @UseGuards(AccessJwtAuthenticationGuard, RoleAuthorizationGuard)
 export class ProductResolver {
-    constructor(private readonly productService: ProductService) { }
+  constructor(
+    private readonly productService: ProductService,
+    private readonly fileService: FileService
+  ) {}
 
-    @Query(() => [Product])
-    @Public()
-    async getProducts(@Args('findOptions', { nullable: true }) findOptions: FindOptionsProductInput) {
-        return await this.productService.getProducts(findOptions);
-    }
+  @Query(() => [Product])
+  @Public()
+  async getProducts(
+    @Args("findOptions", { nullable: true })
+    findOptions: FindOptionsProductInput
+  ) {
+    return await Promise.all(
+      (await this.productService.getProducts(findOptions)).map(
+        async (product) => {
+          if (product.images.length === 0) {
+            return product;
+          }
+          return {
+            ...product,
+            images: await Promise.all(
+              product.images.map(async (image) => ({
+                ...image,
+                path: await this.fileService.getFile(image.path),
+              }))
+            ),
+          };
+        }
+      )
+    );
+  }
 
-    @Mutation(() => Product)
-    @Roles(RoleEnum.Admin, RoleEnum.Manager)
-    async createProduct(@Args('product') product: CreateProductInput) {
-        return this.productService.createProduct(product);
-    }
+  @Mutation(() => Product)
+  @Roles(RoleEnum.Admin, RoleEnum.Manager)
+  async createProduct(@Args("product") product: CreateProductInput) {
+    return this.productService.createProduct(product);
+  }
 
-    @Mutation(() => Product)
-    @Roles(RoleEnum.Admin, RoleEnum.Manager)
-    async updateProduct(@Args('id') id: number, @Args('product') product: UpdateProductInput) {
-        return this.productService.updateProduct(id, product);
-    }
+  @Mutation(() => Product)
+  @Roles(RoleEnum.Admin, RoleEnum.Manager)
+  async updateProduct(
+    @Args("id") id: number,
+    @Args("product") product: UpdateProductInput
+  ) {
+    return this.productService.updateProduct(id, product);
+  }
 }
