@@ -1,6 +1,6 @@
 import { UserPayload } from './models/user.payload.model';
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { AuthenticationInput} from './inputs/authentication.input';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { AuthenticationInput } from './inputs/authentication.input';
 import { User } from 'src/User/entities/user.entity';
 import { CreateUserInput } from 'src/User/inputs/create-user.input';
 import { ConfigService } from '@nestjs/config';
@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { Role } from 'src/User/entities/role.entity';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticationPayload } from './models/authentication-payload.model';
+import { ResetPasswordInput } from 'src/Auth/inputs/reset-password.input';
 
 @Injectable()
 export class AuthService {
@@ -18,24 +19,25 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   public async login(authInput: AuthenticationInput) {
     const user: User | null = await this.userRepository
-    .createQueryBuilder('user')
-    .where('user.username = :username', { username: authInput.login })
-    .orWhere('user.email = :email', { email: authInput.login })
-    .getOne();
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username: authInput.login })
+      .orWhere('user.email = :email', { email: authInput.login })
+      .getOne();
 
-  if (!user) {
-    throw new UnauthorizedException('Invalid login');
-  }
+    if (!user) {
+      throw new UnauthorizedException('Invalid login');
+    }
 
-  const isValidPassword: boolean = await bcrypt.compare(authInput.password, user.passwordHash);
+    const isValidPassword: boolean = await bcrypt.compare(authInput.password, user.passwordHash);
 
-  if (!isValidPassword) {
-    throw new UnauthorizedException('Invalid password');
-  }
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid password');
+    }
+    return this.createTokens(user);
   }
 
   public async register(userInput: CreateUserInput): Promise<AuthenticationPayload> {
@@ -62,6 +64,17 @@ export class AuthService {
     if (!user) throw new NotFoundException("User doesn't exist in database");
 
     return this.createTokens(user);
+  }
+
+  public async resetPassword(userId: number, resetPasswordInput: ResetPasswordInput): Promise<AuthenticationPayload> {
+    const user = await this.userRepository.findOneOrFail({ where: { id: userId } })
+    const isValidPassword: boolean = await bcrypt.compare(resetPasswordInput.oldPassword, user.passwordHash);
+    if (isValidPassword) {
+      user.passwordHash = await bcrypt.hash(resetPasswordInput.newPassword, this.configService.get<number>('SALT_ROUNDS'));
+      return this.createTokens(await this.userRepository.save(user))
+    }
+
+    throw new BadRequestException("Wrong password!");
   }
 
   private createTokens(user: User): AuthenticationPayload {
